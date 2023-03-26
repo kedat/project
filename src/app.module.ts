@@ -4,7 +4,6 @@ import { AppService } from './app.service';
 import { UsersController } from './users/users.controller';
 import { NameController } from './name/name.controller';
 import { UsersModule } from './users/users.module';
-import { UsersService } from './users/users.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import config from './config';
 
