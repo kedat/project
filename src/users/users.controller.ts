@@ -16,7 +16,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  findAll(): IUser[] {
+  findAll(): Promise<IUser[]> {
     return this.usersService.findAll();
   }
 
@@ -26,22 +26,25 @@ export class UsersController {
   // }
 
   @Get(':id')
-  findOne(@Param('id') id): IUser {
+  findOne(@Param('id') id): Promise<IUser> {
     return this.usersService.findOne(id);
   }
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto): string {
-    return `This ${createUserDto.id} is already ${createUserDto.age} years old`;
+  create(@Body() createUserDto: CreateUserDto): Promise<IUser> {
+    return this.usersService.create(createUserDto);
   }
 
   @Delete(':id')
-  delete(@Param('id') id): string {
-    return `Delete user ${id}`;
+  delete(@Param('id') id): Promise<IUser> {
+    return this.usersService.delete(id);
   }
 
   @Put(':id')
-  update(@Body() updateNameDto: CreateUserDto, @Param('id') id): string {
-    return `Update user ${id} - Name: ${updateNameDto.name}`;
+  update(
+    @Body() updateNameDto: CreateUserDto,
+    @Param('id') id,
+  ): Promise<IUser> {
+    return this.usersService.update(id, updateNameDto);
   }
 }

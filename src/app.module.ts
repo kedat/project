@@ -3,30 +3,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersController } from './users/users.controller';
 import { NameController } from './name/name.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import * as dotenv from 'dotenv';
-dotenv.config();
-import { User } from './users/user.entity';
 import { UsersModule } from './users/users.module';
 import { UsersService } from './users/users.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import config from './config';
 
 @Module({
-  imports: [
-    UsersModule,
-    TypeOrmModule.forRoot({
-      type: 'mysql',
-      host: process.env.DB_HOST,
-      port: 3306,
-      username: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      entities: [User],
-      synchronize: true,
-      autoLoadEntities: true,
-    }),
-    TypeOrmModule.forFeature([User]),
-  ],
+  imports: [UsersModule, MongooseModule.forRoot(config.mongoURL)],
   controllers: [AppController, UsersController, NameController],
-  providers: [AppService, UsersService],
+  providers: [AppService],
 })
 export class AppModule {}

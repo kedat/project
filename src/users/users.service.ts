@@ -1,44 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { IUser } from './interfaces/item.interface';
 
 @Injectable()
 export class UsersService {
-  private readonly users: IUser[] = [
-    {
-      id: 10,
-      name: 'ljlk',
-      age: 123,
-      address: 'nh',
-    },
-    {
-      id: 15,
-      name: 'dat',
-      age: 12356787,
-      address: 'nh',
-    },
-  ];
+  constructor(@InjectModel('User') private readonly userModel: Model<IUser>) {}
 
-  constructor(
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
-  ) {}
-
-  findAll(): IUser[] {
-    return this.users;
+  // findAll(): IUser[] {
+  //   return this.users;
+  // }
+  async findAll(): Promise<IUser[]> {
+    return await this.userModel.find();
   }
 
   // findOne(name: string): IUser {
   //   return this.users.find((user) => user.name === name);
   // }
 
-  findOne(id: number): IUser {
-    return this.users.find((user) => user.id == id);
+  async findOne(id: number): Promise<IUser> {
+    return await this.userModel.findOne({ _id: id });
   }
 
-  async remove(id: string): Promise<void> {
-    await this.usersRepository.delete(id);
+  async create(user: IUser): Promise<IUser> {
+    const newItem = new this.userModel(user);
+    return await newItem.save();
+  }
+
+  async delete(id: string): Promise<IUser> {
+    return await this.userModel.findByIdAndRemove(id);
+  }
+
+  async update(id: string, item: IUser): Promise<IUser> {
+    return await this.userModel.findByIdAndUpdate(id, item, { new: true });
   }
 }
